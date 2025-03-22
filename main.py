@@ -42,58 +42,58 @@ def select_image():
         except Exception as e:
             messagebox.showerror("错误", f"发生错误: {e}")
 
+if __name__ == "__main__":
+    # 选择文件夹
+    folder_path = filedialog.askdirectory()
+    if not folder_path:
+        messagebox.showerror("错误", "未选择文件夹")
+    else:
+        # 创建主窗口
+        root = tk.Tk()
+        root.title("人脸识别系统")
+        root.geometry("800x600")  # 固定窗口大小
 
-# 选择文件夹
-folder_path = filedialog.askdirectory()
-if not folder_path:
-    messagebox.showerror("错误", "未选择文件夹")
-else:
-    # 创建主窗口
-    root = tk.Tk()
-    root.title("人脸识别系统")
-    root.geometry("800x600")  # 固定窗口大小
+        # 添加标题标签
+        title_label = tk.Label(root, text="人脸识别系统", font=("宋体", 24, "bold"), fg="darkblue")
+        title_label.pack(pady=20)
 
-    # 添加标题标签
-    title_label = tk.Label(root, text="人脸识别系统", font=("Arial", 24, "bold"), fg="darkblue")
-    title_label.pack(pady=20)
+        # 主布局分为左右两列
+        left_frame = tk.Frame(root)
+        left_frame.pack(side="left", padx=20, pady=20, fill="both")
 
-    # 主布局分为左右两列
-    left_frame = tk.Frame(root)
-    left_frame.pack(side="left", padx=20, pady=20, fill="both")
+        right_frame = tk.Frame(root)
+        right_frame.pack(side="right", padx=20, pady=20, fill="both", expand=True)
 
-    right_frame = tk.Frame(root)
-    right_frame.pack(side="right", padx=20, pady=20, fill="both", expand=True)
+        # 左侧区域：列表框和按钮
+        listbox_label = tk.Label(left_frame, text="图片列表", font=("Arial", 12))
+        listbox_label.pack(pady=5)
 
-    # 左侧区域：列表框和按钮
-    listbox_label = tk.Label(left_frame, text="图片列表", font=("Arial", 12))
-    listbox_label.pack(pady=5)
+        listbox = tk.Listbox(left_frame, width=30, height=20)
+        listbox.bind("<<ListboxSelect>>", on_listbox_select)
 
-    listbox = tk.Listbox(left_frame, width=30, height=20)
-    listbox.bind("<<ListboxSelect>>", on_listbox_select)
+        # 添加滚动条
+        scrollbar = tk.Scrollbar(left_frame)
+        scrollbar.pack(side="right", fill="y")
+        listbox.config(yscrollcommand=scrollbar.set)
+        scrollbar.config(command=listbox.yview)
 
-    # 添加滚动条
-    scrollbar = tk.Scrollbar(left_frame)
-    scrollbar.pack(side="right", fill="y")
-    listbox.config(yscrollcommand=scrollbar.set)
-    scrollbar.config(command=listbox.yview)
+        listbox.pack(pady=10)
 
-    listbox.pack(pady=10)
+        select_button = tk.Button(left_frame, text="进行识别", command=select_image,
+                                  bg="#4CAF50", fg="white", font=("Arial", 10))
+        select_button.pack(pady=10, ipadx=10, ipady=5)
 
-    select_button = tk.Button(left_frame, text="进行识别", command=select_image,
-                              bg="#4CAF50", fg="white", font=("Arial", 10))
-    select_button.pack(pady=10, ipadx=10, ipady=5)
+        # 右侧区域：图片和结果
+        image_label = tk.Label(right_frame, bg="lightgray", bd=2, relief="groove")
+        image_label.pack(pady=20)
 
-    # 右侧区域：图片和结果
-    image_label = tk.Label(right_frame, bg="lightgray", bd=2, relief="groove")
-    image_label.pack(pady=20)
+        result_label = tk.Label(right_frame, text="识别结果将显示在这里",
+                                wraplength=300, font=("Arial", 11), fg="#333")
+        result_label.pack(pady=10)
 
-    result_label = tk.Label(right_frame, text="识别结果将显示在这里",
-                            wraplength=300, font=("Arial", 11), fg="#333")
-    result_label.pack(pady=10)
+        # 加载图片文件列表
+        image_files = [f for f in os.listdir(folder_path) if f.lower().endswith(('.png', '.jpg', '.jpeg'))]
+        for file in image_files:
+            listbox.insert(tk.END, file)
 
-    # 加载图片文件列表
-    image_files = [f for f in os.listdir(folder_path) if f.lower().endswith(('.png', '.jpg', '.jpeg'))]
-    for file in image_files:
-        listbox.insert(tk.END, file)
-
-    root.mainloop()
+        root.mainloop()
